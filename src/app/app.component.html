@@ -1,0 +1,124 @@
+<div class="container-fluid">
+    <div class="row">
+      <nav class="navbar navbar-light text-light bg-primary justify-content-between col-lg-12">
+          <a class="navbar-brand">User Screen</a>   
+      </nav>
+   </div>
+
+  <div class="row border border-primary">
+    <div class="col-lg-4 col-md-3 col-sm-12 p-3">
+        <div class="navbar navbar-light text-light bg-secondary row mb-2">
+            User Registration Form
+        </div>
+        <small class="form-text text-secondary">All <span class="text-danger font-weight-bold">*</span> marked fields are mandatory</small>
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="mt-2">
+        <div class="form-group">
+          <label for="userId">User ID<span class="text-danger font-weight-bold">*</span></label>
+          <input type="text" class="form-control" formControlName="userId" 
+          id="userId">
+          <div *ngIf="getField('userId').errors?.required && getField('userId').touched">
+           <small class="form-text text-danger">Please enter User Id</small>
+          </div>
+          <div *ngIf="getField('userId').errors?.userIDExists && getField('userId').touched">
+              <small class="form-text text-danger">Id is already taken</small>
+         </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="userName">User Name<span class="text-danger font-weight-bold">*</span></label>
+          <input type="text" class="form-control" formControlName="userName"
+           id="userName" >
+           <div *ngIf="getField('userName').errors?.required && getField('userName').touched">
+              <small class="form-text text-danger">Please enter User Name</small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email<span class="text-danger font-weight-bold">*</span></label>
+            <input type="email" class="form-control" formControlName="email"
+             id="email">
+             <div *ngIf="getField('email').errors?.required && getField('email').touched">
+                <small class="form-text text-danger">Please enter email</small>
+              </div>
+              <div *ngIf="getField('email').errors?.email && getField('email').touched">
+                  <small class="form-text text-danger">Please enter Valid email</small>
+              </div>
+         </div>
+
+         <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" class="form-control" formControlName="phoneNumber"
+             id="phoneNumber">
+             <div *ngIf="getField('phoneNumber').errors?.pattern && getField('phoneNumber').touched">
+                <small class="form-text text-danger">Should begin with 7,8 or 9 and should have 10 digits</small>
+            </div>
+         </div>
+
+         <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" formControlName="status" class="form-control">
+              <option value="">Select</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+         </div>
+         <div *ngIf="!userForm.valid">
+          <small class="form-text text-danger mb-1">fill all mandatory fields before you proceed.</small>
+        </div> 
+        <button type="submit" class="btn mr-2 mb-2"
+         ngClass="{{editingOn?'btn-warning':'btn-primary'}}"
+         [disabled]="!userForm.valid"
+         >
+          {{editingOn?'Update User':'Create User'}}</button>
+        <button type="reset" class="btn btn-secondary mb-2" (click)="editingOn=false;userForm.reset()">Reset User</button>
+      </form>
+    </div>
+    <div class="col-lg-8 col-md-9 col-sm-12">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light align-self-end">
+          <div class="form-inline my-2 my-lg-0">
+            <select class="form-control mr-2 mb-2" [(ngModel)]="parameterTofilter">
+              <option selected value="userId">Search by Id</option>
+              <option value="userName">Search by Name</option>
+            </select>  
+            <input class="form-control mr-sm-2 mb-2"  [(ngModel)]="searchValue" type="search"
+             [placeholder]="'Search '+parameterTofilter+' here'">
+          </div>
+          
+      </nav>
+      <div class="table-responsive-sm">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>User Id</th>
+            <th>User Name</th>
+            <th class="d-none d-sm-table-cell">Email</th>
+            <th class="d-none d-sm-none d-md-table-cell">Phone Number</th>
+            <th class="d-none d-sm-none d-md-table-cell">Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of userData|userFilter:parameterTofilter:searchValue; let indx = index">
+            <th>{{user.userId}}</th>
+            <td>{{user.userName}}</td>
+            <td class="d-none d-sm-table-cell">{{user.email}}</td>
+            <td class="d-none d-sm-none d-md-table-cell">{{user.phoneNumber}}</td>
+            <td class="d-none d-sm-none d-md-table-cell">{{user.status}}</td>
+            <td>
+              <span class="badge badge-pill badge-warning mr-2 p-2 mb-2" (click)="editUser(user,indx)">Edit</span>
+              <span class="badge badge-pill badge-danger p-2" (click)="removeUser(user,indx)">Delete</span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-0">
+      <nav class="navbar navbar-light text-light bg-primary justify-content-between col-lg-12">
+          <a class="navbar-brand">Built in Angular</a>   
+      </nav>
+   </div>
+</div>
+
+
